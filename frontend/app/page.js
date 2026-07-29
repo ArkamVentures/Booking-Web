@@ -245,7 +245,7 @@ export default function Home() {
                   <div>
                     <p className="font-medium text-gray-900 text-sm">{booking.name}</p>
                     <p className="text-xs text-gray-500">
-                      {booking.date} · {booking.time_slot}
+                      {booking.date} - {booking.time_slot}
                     </p>
                     <p className="text-xs text-gray-500">
                       {booking.category}
