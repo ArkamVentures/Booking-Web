@@ -23,11 +23,6 @@ export const CATEGORIES = [
   'Discussion',
   'Important Meeting',
   'Consultation',
-  '1-on-1 Review',
-  'Code Review',
-  'Project Planning',
-  'Client Support',
-  'Workshop',
 ]
 
 // The Supabase Edge Functions base URL. Comes from .env.local
