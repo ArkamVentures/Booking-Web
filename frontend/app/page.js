@@ -16,6 +16,7 @@ function getTodayDate() {
 export default function Home() {
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
+  const [fetchError, setFetchError] = useState('')
 
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
@@ -32,12 +33,21 @@ export default function Home() {
   // Calls the "bookings" Edge Function deployed on Supabase.
   async function loadBookings() {
     setLoading(true)
-    const response = await fetch(API_URL + '/bookings', {
-      headers: authHeaders,
-    })
-    const data = await response.json()
-    setBookings(data)
-    setLoading(false)
+    setFetchError('')
+    try {
+      const response = await fetch(API_URL + '/bookings', {
+        headers: authHeaders,
+      })
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status} ${response.statusText}`)
+      }
+      const data = await response.json()
+      setBookings(data)
+    } catch (err) {
+      setFetchError(err.message || 'Failed to load bookings. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -233,6 +243,17 @@ export default function Home() {
 
           {loading ? (
             <p className="text-gray-400 text-sm">Loading bookings...</p>
+          ) : fetchError ? (
+            <div className="rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">
+              <p className="font-medium">Could not load bookings</p>
+              <p className="mt-1 text-red-500">{fetchError}</p>
+              <button
+                onClick={loadBookings}
+                className="mt-2 text-red-600 underline text-xs"
+              >
+                Try again
+              </button>
+            </div>
           ) : visibleBookings.length === 0 ? (
             <p className="text-gray-400 text-sm">No bookings found.</p>
           ) : (
